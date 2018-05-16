@@ -11,18 +11,20 @@
 # https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/#installing-the-theme
 
 # theme                  : "minimal-mistakes-jekyll"
-# remote_theme           : "mmistakes/minimal-mistakes"
+#remote_theme             : "mmistakes/minimal-mistakes"
+repository               : "scuzz3y/scuzz3y.github.io"
+#remote_theme             : "scuzz3y/minimal-mistakes"
 minimal_mistakes_skin    : "air" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
 
 # Site Settings
 locale                   : "en-US"
-title                    : "BCAdler"
+title                    : "Scuzz3y Space"
 title_separator          : "-"
 name                     : "Brandon Adler"
 description              : "Computing Security"
 url                      : # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
-repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
+#repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
 teaser                   : # path of fallback teaser image, e.g. "/assets/images/500x300.png"
 # breadcrumbs            : false # true, false (default)
 words_per_minute         : 200
@@ -100,9 +102,9 @@ analytics:
 author:
   name             : "Brandon Adler"
   avatar           : # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "I am an amazing person."
+  bio              : "A Passionate Computing Security Student"
   location         : "Rochester, NY"
-  email            : "bcadler1@gmail.com"
+  email            : 
   uri              : "https://bcadler.com"
   home             : # null (default), "absolute or relative url to link to author home"
   bitbucket        :
@@ -233,16 +235,16 @@ tag_archive:
   type: liquid
   path: /tags/
 # https://github.com/jekyll/jekyll-archives
-# jekyll-archives:
-#   enabled:
-#     - categories
-#     - tags
-#   layouts:
-#     category: archive-taxonomy
-#     tag: archive-taxonomy
-#   permalinks:
-#     category: /categories/:name/
-#     tag: /tags/:name/
+jekyll-archives:
+  enabled:
+    - categories
+    - tags
+  layouts:
+    category: archive-taxonomy
+    tag: archive-taxonomy
+  permalinks:
+    category: /categories/:name/
+    tag: /tags/:name/
 
 
 # HTML Compression
@@ -254,9 +256,9 @@ compress_html:
 
 # Defaults
 defaults:
-  # _posts
+  # Blog Posts
   - scope:
-      path: ""
+      path: "_posts/blog"
       type: posts
     values:
       layout: single
@@ -265,3 +267,22 @@ defaults:
       comments: # true
       share: true
       related: true
+      category: blog
+      breadcrumbs:
+        - label: "Blog Posts"
+          url: "/blog/"
+  # TIL
+  - scope:
+      path: "_posts/til"
+      type: posts
+    values:
+      layout: single
+      author_profile: true
+      read_time: true
+      comments: # true
+      share: true
+      related: true
+      category: til
+      breadcrumbs:
+        - label: "TIL"
+          url: "/til/"
