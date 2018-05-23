@@ -286,3 +286,14 @@ defaults:
       breadcrumbs:
         - label: "TIL"
           url: "/til/"
+  # Drafts
+  - scope:
+      path: "_drafts"
+      type: posts
+    values:
+      layout: single
+      author_profile: true
+      read_time: true
+      breadcrumbs:
+        - label: "Drafts"
+          url: "/drafts/"
