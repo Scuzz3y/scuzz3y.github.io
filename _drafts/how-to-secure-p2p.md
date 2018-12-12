@@ -4,8 +4,8 @@ excerpt: "Blog Post for CSEC-472: Authentication and Security Models"
 ---
 
 # Authors
-- Brandon Adler
-- Russell Babarsky
+- [Brandon Adler](https://www.scuzz3y.space)
+- [Russell Babarsky](https://www.russellmbabarsky.com)
 - Kristen Tumacder
 - Chase Van Duyne
 
@@ -13,6 +13,8 @@ excerpt: "Blog Post for CSEC-472: Authentication and Security Models"
 - How can today’s various technologies such as, but not limited to, cryptography, time decay models, and PKI be used in securing P2P networks while maintaining the characteristics of P2P
   - Such as decentralization, anonymity, and anarchy trust systems?
 - What protocols today can be implemented to achieve this effect with P2P networks?
+
+<img src="/assets/images/how-to-secure-p2p/p2p-example.png" style="display:block;width:50%;margin-left:auto;margin-right:auto">
 
 
 # Background
@@ -31,7 +33,7 @@ A final solution would be the pricing mechanism discussed in [[3]](#3). This mod
 ## Authentication and Trust
 ### TODO - Not done in paper yet
 
-## PKI
+## Public Key Infrastructure
 Implementation of PKI-based functions can also be used to mitigate the pitfalls of P2P. As stated in the Introduction, P2P systems have two functions for peers: enrollment function and peer discovery function. A PKI-based concept that can be applied to these two functions is implementing a Kerberos-like authentication mechanism or a Super Peer concept [[2]](#2). Although both the Kerberos-like and Super Peer mechanisms may be useful, there is a downfall: these mechanisms can be exploited. As soon as a malicious peer is authenticated it can report legit peers while allowing for the authentication of other malicious peers.
 
 Other PKI-based implementations are:
