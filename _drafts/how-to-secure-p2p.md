@@ -3,6 +3,10 @@ title: "How to Secure P2P"
 excerpt: "Blog Post for CSEC-472: Authentication and Security Models"
 ---
 
+# TODO
+- Update citation #'s
+- Review and finalize paper then update this
+
 # Authors
 - [Brandon Adler](https://www.scuzz3y.space)
 - [Russell Babarsky](https://www.russellmbabarsky.com)
@@ -10,12 +14,12 @@ excerpt: "Blog Post for CSEC-472: Authentication and Security Models"
 - Chase Van Duyne
 
 # Research Questions
-- How can today’s various technologies such as, but not limited to, cryptography, time decay models, and PKI be used in securing P2P networks while maintaining the characteristics of P2P
-  - Such as decentralization, anonymity, and anarchy trust systems?
-- What protocols today can be implemented to achieve this effect with P2P networks?
+1. How can modern technology conquer the security pitfalls of P2P?
+2. Are there trade-offs when securing P2P?
+    - Are certain core features of P2P (decentralization anonymity, etc.) lost when security is implemented?
+3. How can peer authentication and trust be secured?
 
 <img src="/assets/images/how-to-secure-p2p/p2p-example.png" style="display:block;width:50%;margin-left:auto;margin-right:auto">
-
 
 # Background
 From [RFC 5694](https://tools.ietf.org/html/rfc5694), a system is considered to be P2P if “the elements that form the system share their resources in order to provide the service the system has been designed to provide.  The elements in the system both provide services to other elements and request services from other elements.” The main two functions in all P2P systems are enrollment function and peer discovery function. The enrollment function manages node authentication and authorization while the peer discovery function “allows nodes to discover peers in the system in order to connect to them” (RFC 5694) and to become a peer.
@@ -31,14 +35,17 @@ Another solution is to anonymize peers [[5]](#5). “An anonymous P2P provides e
 A final solution would be the pricing mechanism discussed in [[3]](#3). This model “promises to ‘grow’ P2P networks that are more resistant to virus and worm propagation by integrating recent developments in complex network theory with incentive compatible pricing of network links” [[3]](#3). Basically, the main idea of this model is to increase the decision-making power for nodes so that they can carefully choose which nodes can be linked to the network. 
 
 ## Authentication and Trust
-### TODO - Not done in paper yet
+This section specifically focuses on current authentication and trust mechanisms that can be implemented in P2P networks. Some solutions include: 
+- Use of a partially distributed group key management protocol [[6]](#6)
+
+Current methods of trust come in ways of evaluating hosts based on transaction history.  Some of the current trust models are PeerTrust, EigenTrust, Reco-Trust, SFTrust, UserTrust, MASTrust, FCTrust [[12]](#12).  These trust models have certain criteria of trustworthiness in a host and come up with mathematical ways to evaluate the specified criteria.  Some the the criteria seen in other works are based on transaction history, peer recommendations, and time decay [[9](#9),[12](#12)].  These criteria can be very specific to the nature of the the P2P network, or they can be universal and work for various types of P2P networks.  Overall, the most difficult thing about trust models that is the metrics are known by a malicious party then a dynamic malicious host can alter its trust metrics.
 
 ## Public Key Infrastructure
 Implementation of PKI-based functions can also be used to mitigate the pitfalls of P2P. As stated in the Introduction, P2P systems have two functions for peers: enrollment function and peer discovery function. A PKI-based concept that can be applied to these two functions is implementing a Kerberos-like authentication mechanism or a Super Peer concept [[2]](#2). Although both the Kerberos-like and Super Peer mechanisms may be useful, there is a downfall: these mechanisms can be exploited. As soon as a malicious peer is authenticated it can report legit peers while allowing for the authentication of other malicious peers.
 
-Other PKI-based implementations are:
-- Chord-PKI [[1]](#1), where there will be multiple steps used to certify and validate a peer.
-- Issuance of peers’ own X.509 certificate [[4]](#4). Each peer will issue its own X.509 and will also be assigned certificates by an external Certificate Authority. The certificates can be given special attributes for each peer such as a “Common Name” for other peers to validate against and attributes to determine a peer’s role.
+There are other PKI implementations that serve similar purposes but each have their own set of pros and cons. One common implementation is known as Chord-PKI [1], focuses on doing away with external PKI system due to the cost that it will have an efficiency. Instead, the chord-PKI system has three distinct properties: scalability through a hash table to keep track of the participants, efficient method of storing information about the certificates themselves, and resilience to compromised nodes on the network. These goals are achieved through means of having certificate nodes serving specific areas. This way, if a certificate node is compromised, only that area is impacted and the rest of the network can function normally. This also reduces the amount of work the certificate nodes will have to do, as they will not have to serve the entire network, just the one area, thus increasing efficiency.
+
+Another common implementation has issuance of peers’ own X.509 certificate [4]. This means that each peer will issue its own X.509 and will also be assigned certificates by an external Certificate Authority. The certificates can be given special attributes for each peer such as a “Common Name” for other peers to validate against and attributes to determine a peer’s role.
 
 # Results - TODO: Should probably be renamed
 ## From Current Literature
@@ -53,12 +60,11 @@ For the second research question, there are indeed several trade-offs when secur
 
 # Proposed Method
 ## General Security Solutions for P2P Networks
-- TODO: Section NOT FINISHED
 First, we propose to encrypt the P2P traffic. To do this, several key authority servers/peers need to be established and designated. In the configuration file for these servers, the following will be stated: the algorithm used to generate the symmetric key, a list of the key authority servers/peers, and the algorithm for the key exchange. By default, AES-128 will be used to generate the symmetric key and Diffie-Hellman will be used to distribute the symmetric key.  
 
 For key management and for the host to prove their authenticity, public key management will be used as it is the standard for key management technology. PKI allows us to manage certificates in such a way, that even if a machine is compromised and the certification is also compromised, we can easily revoke the certification, which forces clients on our network to not accept traffic or communicate with it in any way. 
 
-The main challenges with implementing PKI into a P2P network are distributing keys and ...
+The main challenges with implementing PKI into a P2P network are distributing keys and  maintaining efficient communication between hosts on the network. With the nature of peer to peer networks, it can be hard to distribute keys to every node of the network since there is no central server. One possible solution is to have an external PKI server that serves all of the nodes in the network. While this lacks efficiency, it provides simplicity as there is only a single server to setup and the implementation is straight forward.
 
 ## Trust Mechanisms
 In order to establish trust on the P2P network peers will supply feedback to the various super peers on the network.  This feedback will be used to calculate trust metrics assigned to each of the peers.  The trust metric will be a numeric value which will represent the trustworthiness of a peer.  In order to calculate this metric multiple sub-metrics must been evaluated. These sub-metrics are: Satisfaction, Direct Trust, Indirect Trust, Global Trust, Feedback credibility, Decay Reliability, and Final trust.  This trust model is based of the work of Das, Islam and Sorwar [[12]](#12).
@@ -76,17 +82,20 @@ Indirect trust is the based on transactions of an agent and other peers.  Indire
 Global Trust is a combination of direct and indirect trust.  In global trust, direct trust is more heavily weighted as the transaction history increases between peers and they become more confident with the tasks they perform.  This global trust metric allows for peers to compare both their and other’s experiences with a peer.  If a peer has a very low indirect trust metric, however, has a high direct trust metric, the global trust metric will reflect this poor satisfaction rates of others by decreasing global trust, even though direct trust is high.
 
 ## Feedback Credibility
+Feedback credibility is a metric of combined feedback from all of the hosts that an agent has encountered while in the P2P network.  This metric is computed based on the recommendations of previous transactions of a host.  This metric would serve as an overall recommendation as to whether to trust a host based on transaction history and is updated over time.
 
 ## Decay Model
 The decay model metric shows that as a significant amount of time passed by then the trust of the absent peer will decrease.  This is in place to counter dynamic malicious peers.  Dynamic malicious peers will slow their transaction to hide if they believe they are close to detection. Therefore, if a peer doesn’t make any transactions for a period of time it could be suspect for malicious activity.  Also it is hard to determine if the peer was able to maintain the trust level during the time of no transactions. Due to this, a significant gap between transaction is considered a negative and will result in a decline in trust relative to time.  In addition to this if a low transaction host suddenly starts making many significantly more transactions it will also be suspect for malicious activity, because the peer may have been compromises and it acting unusual.  In summary, the time decay metric measures the time between transactions and based on transaction history determines if a peer is trustworthy.
 
 ## Deviation Reliability
+Deviation reliability is the the range of trust metrics we are willing to accept and connect to.  Having the deviation reliability allows a metric to counter dynamic hosts which raises or lowers trust scores in order to appear trustworthy.  This metric allows us to track these changes in order to see how a hosts trust changes over time and if it is with in our acceptable trust values.
 
 ## Final Trust
+Using the expected trust and confidence values of a host we can calculate a final trust value which will be deterministic of whether a host is trustworthy overall.  This final trust metric wil take the other trust metrics into account, assuming that the values of the other metrics are valid. Overall, the final trust value should be within an acceptable range and will limit the number of malicious hosts that fabricate their trust levels.
 
 # Future Work
-## For Current Literature - TODO: Will be updated in paper
-From current literature, time decay models, chord PKI and similar methods seem to be the most beneficial in securing P2P networks. In the time decay model, < Chase help pls > 
+## For Current Literature
+From current literature, time decay models, chord PKI and similar methods seem to be the most beneficial in securing P2P networks. The time decay model, helps fight two vulnerabilities in P2P networks.  These vulnerabilities are dynamic hosts and shilling attacks [6]. Dynamic hosts will change way they attack if they think that they me discovered.  These malicious hosts are often troublesome because they change in ways that some trust models won’t anticapiate.  The shilling attack is where malicious hosts make false transactions in order to increase the trust values of malicious hosts while decreasing the trust values of non-malicious hosts.
 
 Methods which allow trust values to be assigned to hosts to determine if a transaction should be made, similar to a time-decay model, could help secure P2P by enabling hosts to make better decisions with whom they connect to. Also continued research in adapting PKI to work with the desired properties of P2P networks may prove to be another method of which to secure P2P networks.
 
@@ -94,26 +103,25 @@ Methods which allow trust values to be assigned to hosts to determine if a trans
 The methodology stated in the Proposed Method section is purely theoretical. For future work, code, test cases and simulations can be written to see if the methods are feasible and if they actually work well when used in different applications and/or situations. If tests go well, we would modify the code so that it can be scalable for large P2P networks.
 
 ### Futher Development of Trust Model
-- Math and numerical calculation for simulation
+Based on the articles we have read there are many ideas on how to evaluate hosts and create working trust models.  Many of these trust models involve mathematical calculations to create trust metrics.  In the future we plan on doing research to numerically evaluate hosts and to create boundaries in order to detect malicious hosts. This would involve more research into the specific ways malicious host bypass other trust metrics in order to stop these same flaws in our trust model.
 
-### Code and Simulation - TODO: Will be updated in paper
-- Simulation effectiveness of trust model and authentication/ security mechanisms for P2P networks
+### Code and Simulation
+After the development of the trust model and the proper authentication mechanisms we would like to make to secure P2P network, we would start development on a simulation.  The simulation would be a program that would implement the trust model equations and algorithm to evaluate the effectiveness of our model.  This simulation could then be compared to other trust models to find its effectiveness and identifying malicious hosts within a P2P network.
 
-# Conclusion - TODO: Might be updated before submission
+# Conclusion
 P2P is said to be inspired by Napster (1999) and the concept of peers and decentralization has grown into what it is today. Even though at its most basic form P2P is naturally insecure, it can still be developed and made to be more secure and more up to date with current security standards and practices. Using modern security techniques such as PKI and trust mechanisms, makes PKI more practical for everyday use. PKI would allow for a hierarchy of trust and a way for hosts to validate traffic in the network that they are communicating within, while trust models allow hosts to make smarter decisions on their own from both past experiences and from information that is fed to them. Torrent tools, video games, and chat platforms show us that with the correct security in place, P2P can be used to develop great platforms that provide a variety of uses and functionality. With goals that were described in our future work, it may be possible that communication could be standardized to be performed solely through P2P.
 
-
 # References
-1. <a style="text-decoration:none" name="1">A. Avramidis , P. Kotzanikolaou, C. Douligeris and M. Burmester, “Chord-PKI: A distributed trust infrastructure based on P2P networks,” Comput. Netw., vol. 56, no. 1, pp. 378–398, 2012</a>
-2. <a style="text-decoration:none" name="2">B.-T. Oh, S.-B. Lee, and H.-J. Park, “A Peer Mutual Authentication Method using PKI on Super Peer based Peer-to-Peer Systems,” 2008 10th International Conference on Advanced Communication Technology, 2008.</a>
-3. <a style="text-decoration:none" name="3">D. O. Rice, "A Proposal for the Security of Peer-to-Peer (P2P) Networks: a pricing model inspired by the theory of complex networks," 2007 41st Annual Conference on Information Sciences and Systems, Baltimore, MD, 2007, pp. 812-813, from <http://ieeexplore.ieee.org.ezproxy.rit.edu/stamp/stamp.jsp?tp=&arnumber=4298420&isnumber=4298257></a>
-4. <a style="text-decoration:none" name="4">Franklin, M. (2004). PKI for P2P Authentication Without All the CA Hassles: A Proposal by the Dartmouth PKI Lab (Tech.). Hanover, New Hampshire. <http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=990434&isnumber=21356></a>
-5. <a style="text-decoration:none" name="5">Li, J. (2007, December). A Survey of Peer-to-Peer Network Security Issues. Retrieved September 15, 2018, from <https://www.cse.wustl.edu/~jain/cse571-07/ftp/p2p/></a>
-6. <a style="text-decoration:none" name="6">P. Vijayakumar, R. Naresh, L. J. Deborah, and S. H. Islam, “An efficient group key agreement protocol for secure P2P communication,” Security and Communication Networks, vol. 9, no. 17, pp. 3952–3965, 2016.</a>
-7. <a style="text-decoration:none" name="7">R. Schollmeier, "A definition of peer-to-peer networking for the classification of peer-to-peer architectures and applications," Proceedings First International Conference on Peer-to-Peer Computing, Linkoping, Sweden, 2001, pp. 101-102.</a>
-8. <a style="text-decoration:none" name="8">S. Balfe, A. D. Lakhani and K. G. Paterson, "Trusted computing: providing security for peer-to-peer networks," Fifth IEEE International Conference on Peer-to-Peer Computing (P2P'05), Konstanz, 2005, pp. 117-124, from <http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1551027&isnumber=33049></a>
-9. <a style="text-decoration:none" name="9">Y. Zhang, K. Wang, K. Li, W. Qu and Y. Xiang, "A Time-decay Based P2P Trust Model," 2009 International Conference on Networks Security, Wireless Communications and Trusted Computing, Wuhan, Hubei, 2009, pp. 235-238, from <http://ieeexplore.ieee.org.ezproxy.rit.edu/stamp/stamp.jsp?tp=&arnumber=4908448&isnumber=4908381></a>
-10. <a style="text-decoration:none" name="10">Z. Jiang and R. Xu, "A P2P Network Authentication Method Based on CPK," 2009 Second International Symposium on Electronic Commerce and Security, Nanchang, 2009, pp. 3-6., from <http://ieeexplore.ieee.org.ezproxy.rit.edu/stamp/stamp.jsp?tp=&arnumber=5209775&isnumber=5209640></a>
-11.  <a style="text-decoration:none" name="11">Picture: <https://en.wikipedia.org/wiki/Peer-to-peer#/media/File:Unstructured_peer-to-peer_network_diagram.png></a>
-12.  <a style="text-decoration:none" name="12">A. Das, M. M. Islam and G. Sorwar, "Dynamic trust model for reliable transactions in multi-agent systems," 13th International Conference on Advanced Communication Technology (ICACT2011), Seoul, 2011, pp. 1101-1106 from <http://ieeexplore.ieee.org.ezproxy.rit.edu/stamp/stamp.jsp?tp=&arnumber=5746000&isnumber=5745722></a>
-13.  <a style="text-decoration:none" name="13">J. Chen, X. Guo and Z. Li, "Research on trust model in the mobile P2P network," 2017 4th International Conference on Information, Cybernetics and Computational Social Systems (ICCSS), Dalian, 2017, pp. 528-532. doi: 10.1109/ICCSS.2017.8091472 from <http://ieeexplore.ieee.org.ezproxy.rit.edu/stamp/stamp.jsp?tp=&arnumber=8091472&isnumber=8091367></a>
+1. <a style="text-decoration:none" name="1">A. Das, M. M. Islam and G. Sorwar, "Dynamic trust model for reliable transactions in multi-agent systems," 13th International Conference on Advanced Communication Technology (ICACT2011), Seoul, 2011, pp. 1101-1106 from <http://ieeexplore.ieee.org.ezproxy.rit.edu/stamp/stamp.jsp?tp=&arnumber=5746000&isnumber=5745722></a>
+2. <a style="text-decoration:none" name="2">A. Avramidis , P. Kotzanikolaou, C. Douligeris and M. Burmester, “Chord-PKI: A distributed trust infrastructure based on P2P networks,” Comput. Netw., vol. 56, no. 1, pp. 378–398, 2012</a>
+3. <a style="text-decoration:none" name="3">B.-T. Oh, S.-B. Lee, and H.-J. Park, “A Peer Mutual Authentication Method using PKI on Super Peer based Peer-to-Peer Systems,” 2008 10th International Conference on Advanced Communication Technology, 2008.</a>
+4. <a style="text-decoration:none" name="4">D. O. Rice, "A Proposal for the Security of Peer-to-Peer (P2P) Networks: a pricing model inspired by the theory of complex networks," 2007 41st Annual Conference on Information Sciences and Systems, Baltimore, MD, 2007, pp. 812-813, from <http://ieeexplore.ieee.org.ezproxy.rit.edu/stamp/stamp.jsp?tp=&arnumber=4298420&isnumber=4298257></a>
+5. <a style="text-decoration:none" name="5">Franklin, M. (2004). PKI for P2P Authentication Without All the CA Hassles: A Proposal by the Dartmouth PKI Lab (Tech.). Hanover, New Hampshire. <http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=990434&isnumber=21356></a>
+6.  <a style="text-decoration:none" name="6">J. Chen, X. Guo and Z. Li, "Research on trust model in the mobile P2P network," 2017 4th International Conference on Information, Cybernetics and Computational Social Systems (ICCSS), Dalian, 2017, pp. 528-532. doi: 10.1109/ICCSS.2017.8091472 from <http://ieeexplore.ieee.org.ezproxy.rit.edu/stamp/stamp.jsp?tp=&arnumber=8091472&isnumber=8091367></a>
+7. <a style="text-decoration:none" name="7">Li, J. (2007, December). A Survey of Peer-to-Peer Network Security Issues. Retrieved September 15, 2018, from <https://www.cse.wustl.edu/~jain/cse571-07/ftp/p2p/></a>
+8. <a style="text-decoration:none" name="8">P. Vijayakumar, R. Naresh, L. J. Deborah, and S. H. Islam, “An efficient group key agreement protocol for secure P2P communication,” Security and Communication Networks, vol. 9, no. 17, pp. 3952–3965, 2016.</a>
+9.  <a style="text-decoration:none" name="9">Picture: <https://en.wikipedia.org/wiki/Peer-to-peer#/media/File:Unstructured_peer-to-peer_network_diagram.png></a>
+10. <a style="text-decoration:none" name="10">R. Schollmeier, "A definition of peer-to-peer networking for the classification of peer-to-peer architectures and applications," Proceedings First International Conference on Peer-to-Peer Computing, Linkoping, Sweden, 2001, pp. 101-102.</a>
+11. <a style="text-decoration:none" name="11">S. Balfe, A. D. Lakhani and K. G. Paterson, "Trusted computing: providing security for peer-to-peer networks," Fifth IEEE International Conference on Peer-to-Peer Computing (P2P'05), Konstanz, 2005, pp. 117-124, from <http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1551027&isnumber=33049></a>
+12. <a style="text-decoration:none" name="12">Y. Zhang, K. Wang, K. Li, W. Qu and Y. Xiang, "A Time-decay Based P2P Trust Model," 2009 International Conference on Networks Security, Wireless Communications and Trusted Computing, Wuhan, Hubei, 2009, pp. 235-238, from <http://ieeexplore.ieee.org.ezproxy.rit.edu/stamp/stamp.jsp?tp=&arnumber=4908448&isnumber=4908381></a>
+13. <a style="text-decoration:none" name="13">Z. Jiang and R. Xu, "A P2P Network Authentication Method Based on CPK," 2009 Second International Symposium on Electronic Commerce and Security, Nanchang, 2009, pp. 3-6., from <http://ieeexplore.ieee.org.ezproxy.rit.edu/stamp/stamp.jsp?tp=&arnumber=5209775&isnumber=5209640></a>
