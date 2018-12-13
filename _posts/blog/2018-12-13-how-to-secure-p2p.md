@@ -5,6 +5,7 @@ excerpt: "Blog Post for CSEC-472: Authentication and Security Models"
 
 # TODO
 - Update citation #'s
+- Add short intro to blog post
 - Review and finalize paper then update this
 
 # Authors
